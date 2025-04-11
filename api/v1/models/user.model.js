@@ -13,6 +13,6 @@ module.exports.createUser = async (full_name, email, hashedPassword, token) => {
 };
 
 module.exports.findByToken = async (token) => {
-    const result = await pool.query('SELECT * FROM users WHERE token = $1', [email]);
+    const result = await pool.query('SELECT * FROM users WHERE token = $1', [token]);
     return result.rows[0];
 };

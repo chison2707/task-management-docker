@@ -91,3 +91,37 @@ module.exports.forgotPassword = async (req, res) => {
         message: "Đã gửi mã OTP qua email"
     });
 };
+
+// [POST]/api/v1/users/password/otp
+module.exports.otpPassword = async (req, res) => {
+    const email = req.body.email;
+    const otp = req.body.otp;
+
+    const result = await ForgotPassword.findOtp(email, otp);
+
+    if (!result) {
+        return res.json({
+            code: 400,
+            message: "Mã OTP không đúng"
+        });
+    }
+
+    if (new Date(result.expire_at) < new Date(Date.now())) {
+        await ForgotPassword.deleteOtp();
+        return res.json({
+            code: 400,
+            message: "Mã OTP đã hết hạn"
+        });
+    }
+
+    const user = await User.findByEmail(email);
+
+    const token = user.token;
+    res.cookie("token", token);
+
+    res.json({
+        code: 200,
+        message: "Xác thực thành công!",
+        token: token
+    });
+};

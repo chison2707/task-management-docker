@@ -8,5 +8,6 @@ router.post('/register', controller.register);
 router.get('/login', controller.login);
 router.get('/infor', authMiddleware.requireAuth, controller.infor);
 router.post('/password/forgot', controller.forgotPassword);
+router.post('/password/otp', controller.otpPassword);
 
 module.exports = router;

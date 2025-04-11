@@ -13,7 +13,7 @@ module.exports.getTask = async (id) => {
 
 module.exports.createTask = async (title, status, contentTask, timeStart, timeFinish, createdBy) => {
     const result = await pool.query(
-        'INSERT INTO tasks (title, status, contentTask,timeStart,timeFinish,createdBy) VALUES ($1, $2, $3, $4,$5,$6)',
+        'INSERT INTO tasks (title, status, contentTask,timeStart,timeFinish,createdBy) VALUES ($1, $2, $3, $4,$5,$6) RETURNING *',
         [title, status, contentTask, timeStart, timeFinish, createdBy]
     );
 

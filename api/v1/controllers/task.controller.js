@@ -17,10 +17,11 @@ module.exports.create = async (req, res) => {
     try {
         const createdBy = req.user.id;
         const { title, status, contentTask, timeStart, timeFinish } = req.body;
-        await Task.createTask(title, status, contentTask, timeStart, timeFinish, createdBy);
+        const data = await Task.createTask(title, status, contentTask, timeStart, timeFinish, createdBy);
         res.json({
             code: 200,
             message: "Tạo thành công",
+            data
         });
     } catch (error) {
         res.json({

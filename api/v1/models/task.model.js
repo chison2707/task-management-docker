@@ -11,6 +11,15 @@ module.exports.getTask = async (id) => {
     return result.rows[0];
 };
 
+module.exports.detailtask = async (id) => {
+    const result = await pool.query(
+        'SELECT * FROM tasks WHERE id = $1 AND deleted = FALSE',
+        [id]
+    );
+
+    return result.rows[0];
+};
+
 module.exports.createTask = async (title, status, contentTask, timeStart, timeFinish, createdBy) => {
     const result = await pool.query(
         'INSERT INTO tasks (title, status, contentTask,timeStart,timeFinish,createdBy) VALUES ($1, $2, $3, $4,$5,$6) RETURNING *',

@@ -31,3 +31,18 @@ module.exports.create = async (req, res) => {
     }
 };
 
+// [GET]/api/v1/tasks/detail/:id
+module.exports.detail = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const task = await Task.detailtask(id);
+
+        res.json(task);
+    } catch (error) {
+        res.json({
+            code: 500,
+            message: "error" + error.message
+        });
+    }
+
+};

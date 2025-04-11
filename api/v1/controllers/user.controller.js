@@ -28,6 +28,7 @@ module.exports.register = async (req, res) => {
 
 // [GET]/api/v1/users/login
 module.exports.login = async (req, res) => {
+    await ForgotPassword.deleteOtp();
     const { email, password } = req.body;
     const user = await User.findByEmail(email);
     if (!user) {

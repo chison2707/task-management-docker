@@ -16,3 +16,10 @@ module.exports.findByToken = async (token) => {
     const result = await pool.query('SELECT * FROM users WHERE token = $1', [token]);
     return result.rows[0];
 };
+
+module.exports.changePass = async (hashedPassword, id) => {
+    await pool.query(
+        'UPDATE users SET password = $1 WHERE id = $2',
+        [hashedPassword, id]
+    );
+};

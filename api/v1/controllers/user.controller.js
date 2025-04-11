@@ -125,3 +125,29 @@ module.exports.otpPassword = async (req, res) => {
         token: token
     });
 };
+
+// [POST]/api/v1/users/password/reset
+module.exports.resetPassword = async (req, res) => {
+    const token = req.body.token;
+    const password = req.body.password;
+
+    const user = await User.findByToken(token);
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (isMatch) {
+        return res.json({
+            code: 400,
+            message: "Mật khẩu đã tồn tại"
+        });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await User.changePass(hashedPassword, user.id);
+
+    res.json({
+        code: 200,
+        message: "Đặt lại mật khẩu thành công"
+    });
+};

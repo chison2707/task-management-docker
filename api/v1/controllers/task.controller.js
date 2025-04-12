@@ -106,3 +106,22 @@ module.exports.changeMulti = async (req, res) => {
         });
     }
 };
+
+// [DELETE]/api/v1/tasks/delete/:id
+module.exports.delete = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const data = await Task.deleteTask(id);
+
+        res.json({
+            code: 200,
+            message: "Xóa thành công",
+            data
+        });
+    } catch (error) {
+        res.json({
+            code: 404,
+            message: "Không tồn tại!"
+        });
+    }
+};

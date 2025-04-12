@@ -46,3 +46,24 @@ module.exports.detail = async (req, res) => {
     }
 
 };
+
+// [PATCH]/api/v1/tasks/change-status/:status/:id
+module.exports.changeStatus = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const status = req.params.status;
+
+        const data = await Task.changeStatus(status, id);
+
+        res.json({
+            code: 200,
+            message: "Update status thành công",
+            data
+        });
+    } catch (error) {
+        res.json({
+            code: 404,
+            message: "Không tồn tại!"
+        });
+    }
+};

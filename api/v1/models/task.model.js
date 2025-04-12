@@ -28,3 +28,12 @@ module.exports.createTask = async (title, status, contentTask, timeStart, timeFi
 
     return result.rows[0];
 };
+
+module.exports.changeStatus = async (status, id) => {
+    const result = await pool.query(
+        'UPDATE tasks SET status = $1 WHERE id = $2 RETURNING *',
+        [status, id]
+    );
+
+    return result.rows[0];
+};

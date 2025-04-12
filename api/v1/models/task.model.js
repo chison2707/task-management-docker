@@ -30,10 +30,17 @@ module.exports.createTask = async (title, status, contentTask, timeStart, timeFi
 };
 
 module.exports.changeStatus = async (status, id) => {
-    const result = await pool.query(
-        'UPDATE tasks SET status = $1 WHERE id = $2 RETURNING *',
-        [status, id]
-    );
-
-    return result.rows[0];
+    let result;
+    if (Array.isArray(id)) {
+        result = await pool.query(
+            'UPDATE tasks SET status = $1 WHERE id = ANY($2::integer[]) RETURNING *',
+            [status, id]
+        );
+    } else {
+        result = await pool.query(
+            'UPDATE tasks SET status = $1 WHERE id = $2 RETURNING *',
+            [status, id]
+        );
+    }
+    return result.rows;
 };

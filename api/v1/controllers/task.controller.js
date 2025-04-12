@@ -67,3 +67,46 @@ module.exports.changeStatus = async (req, res) => {
         });
     }
 };
+
+// [PATCH]/api/v1/tasks/change-multi
+module.exports.changeMulti = async (req, res) => {
+    try {
+        const { id, key, value } = req.body;
+
+        console.log(req.body.id)
+
+        switch (key) {
+            case "status":
+                const data = await Task.changeStatus(value, id)
+                res.json({
+                    code: 200,
+                    message: "Update status thành công",
+                    data
+                });
+                break;
+            // case "delete":
+            //     await Task.updateMany({
+            //         _id: { $in: ids }
+            //     }, {
+            //         deleted: true,
+            //         deleteAt: new Date()
+            //     });
+            //     res.json({
+            //         code: 200,
+            //         message: "Xóa thành công"
+            //     });
+            //     break;
+            default:
+                res.json({
+                    code: 404,
+                    message: "Không tồn tại!"
+                });
+                break;
+        }
+    } catch (error) {
+        res.json({
+            code: 404,
+            message: "Không tồn tại!"
+        });
+    }
+};

@@ -60,3 +60,17 @@ module.exports.deleteTask = async (id) => {
     }
     return result.rows;
 };
+
+module.exports.editTask = async (id, data) => {
+    const keys = Object.keys(data);
+    const values = Object.values(data);
+
+    const setClause = keys.map((key, idx) => `${key} = $${idx + 2}`).join(', ');
+
+    const result = await pool.query(
+        `UPDATE tasks SET ${setClause} WHERE id =$1 RETURNING *`,
+        [id, ...values]
+    );
+
+    return result.rows[0];
+};

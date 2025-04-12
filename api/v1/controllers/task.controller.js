@@ -84,18 +84,14 @@ module.exports.changeMulti = async (req, res) => {
                     data
                 });
                 break;
-            // case "delete":
-            //     await Task.updateMany({
-            //         _id: { $in: ids }
-            //     }, {
-            //         deleted: true,
-            //         deleteAt: new Date()
-            //     });
-            //     res.json({
-            //         code: 200,
-            //         message: "Xóa thành công"
-            //     });
-            //     break;
+            case "delete":
+                const dataDelete = await Task.deleteTask(id);
+                res.json({
+                    code: 200,
+                    message: "Xóa thành công",
+                    dataDelete
+                });
+                break;
             default:
                 res.json({
                     code: 404,

@@ -44,3 +44,19 @@ module.exports.changeStatus = async (status, id) => {
     }
     return result.rows;
 };
+
+module.exports.deleteTask = async (id) => {
+    let result;
+    if (Array.isArray(id)) {
+        result = await pool.query(
+            'UPDATE tasks SET deleted = true WHERE id = ANY($1::integer[]) RETURNING *',
+            [id]
+        );
+    } else {
+        result = await pool.query(
+            'UPDATE tasks SET deleted = true WHERE id =$1 RETURNING *',
+            [id]
+        );
+    }
+    return result.rows;
+};

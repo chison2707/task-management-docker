@@ -1,14 +1,56 @@
 const pool = require('../../../config/pool');
+const paginationHelper = require("../helpers/pagination");
 
-module.exports.getTask = async (id) => {
-    const result = await pool.query(`SELECT * FROM tasks
-    WHERE (createdBy = $1 OR $1::text = ANY (
+module.exports.getTask = async ({ userId, status, title, sortKey, sortValue, page, limit }) => {
+    const values = [userId];
+    let whereClause = `(createdBy = $1 OR $1::text = ANY (
     SELECT jsonb_array_elements_text(listUser::jsonb)
-    )
-        ) 
-    AND deleted = FALSE`, [id]);
+    )) AND deleted = false `;
+    let paramIndex = 2;
+    let orderBy = '';
+    if (status) {
+        values.push(status);
+        whereClause += ` AND status = $${paramIndex++}`;
+    }
 
-    return result.rows[0];
+    if (title) {
+        values.push(`%${title}%`);
+        whereClause += ` AND title ILIKE $${paramIndex++}`;
+    }
+
+    if (sortKey && sortValue) {
+        orderBy = `ORDER BY ${sortKey} ${sortValue.toUpperCase()} `;
+    }
+
+    const countResult = await pool.query(
+        `SELECT COUNT(*) FROM tasks WHERE ${whereClause}`,
+        values
+    );
+
+    // pagination
+    const total = parseInt(countResult.rows[0].count);
+    let objPagination = paginationHelper(
+        {
+            currentPage: 1,
+            limitItems: 5
+        },
+        { page, limit },
+        total
+    );
+    //end pagination
+
+    const dataResult = await pool.query(
+        `SELECT * FROM tasks 
+         WHERE ${whereClause} 
+         ${orderBy}
+         LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
+        [...values, objPagination.limitItems, objPagination.skip]
+    );
+
+    return {
+        total,
+        tasks: dataResult.rows
+    };
 };
 
 module.exports.detailtask = async (id) => {

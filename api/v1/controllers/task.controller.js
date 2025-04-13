@@ -5,12 +5,34 @@ const searchHelper = require("../helpers/search");
 
 // [GET]/api/v1/tasks
 module.exports.index = async (req, res) => {
-    const userId = req.user.id;
+    try {
+        const userId = req.user.id;
 
-    const tasks = await Task.getTask(userId);
+        const result = await Task.getTask({
+            userId,
+            status: req.query.status,
+            title: req.query.title,
+            sortKey: req.query.sortKey,
+            sortValue: req.query.sortValue,
+            page: parseInt(req.query.page),
+            limit: parseInt(req.query.limit)
+        });
 
-    res.json(tasks)
+        res.json({
+            code: 200,
+            message: 'Lấy danh sách task thành công',
+            pagination: result.pagination,
+            data: result.tasks
+        });
+    } catch (error) {
+        res.status(500).json({
+            code: 500,
+            message: 'Lỗi khi lấy task',
+            error: error.message
+        });
+    }
 };
+
 
 // [POST]/api/v1/tasks/create
 module.exports.create = async (req, res) => {

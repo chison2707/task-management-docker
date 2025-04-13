@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
 const routeApiV1 = require("./api/v1/routes/index.route");
+const createTables = require("./api/v1/data/createUserTable");
 
 const app = express()
 const port = process.env.PORT;
@@ -17,6 +18,8 @@ app.use(cookieParser());
 app.use(bodyParser.json())
 
 routeApiV1(app);
+
+createTables();
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
